@@ -58,52 +58,89 @@ class SingleLinkedList:
         return "".join(result)
 
     def __getitem__(self, k):
-        temp = self._head
+        tempNode = self._head
         for i in range(k):
-            temp = temp.__next
-        return temp._element
+            tempNode = tempNode.__next
+        return tempNode._element
 
     def list_reverse(self):
-        head = self._head
-        if head is None or head.next is None:
-            return head
-        elif head.next.next is None:
-            t = head.next
-            head.next.next = head
-            head.next = None
-            return t
-        else:
-            t = self.reverseList(head.next)
-            head.next.next = head
-            head.next = None
-            self._head = t         
+        prev = None
+        current = self._head 
+        while (current is not None): 
+            temp = current.next
+            current.next = prev 
+            prev = current 
+            current = temp
+        head = prev
+        self._head = head
 
     def remove_all_occurance(self, value):
-        # Remove the heading nodes
-        head = self._head
-        while head and head.val == value:
-            head = head.next
-        if not head:
-            return head
-        prev, cur = head, head.next
-        while cur:
-            while cur and cur.val == value:
+        cur = self._head
+        pre = None
+        
+        while cur and cur.val == value:
+            head = cur.next
+            cur = head
+            
+
+        while cur: 
+            while cur and cur.val != value:
+                pre = cur
                 cur = cur.next
-            prev.next = cur
-            if cur:
-                prev, cur = prev.next, cur.next
+            
+            if cur == None:
+                return head
+            
+            pre.next = cur.next
+            cur = pre.next
+        
         self._head = head
     
     def remove_nth_node_from_end(self, n):
-        ret, p2 = _Node(0), self._head #p1 and p2 are slow and fast pointers
-        p1, ret._next = ret, self._head #append a newly created ListNode in front of head to avoid extra checks
-        while p2 != None:
-            if n == 0: p1 = p1.next
-            else: n = n - 1
-            p2 = p2._next
-        p1._next = p1._next._next
-        self._head = ret._next
+        head = self._head
+        #Remove the nth node from the END of the list, return head (the new list)
+        #When removing the nth node from the END of the list, we need to connect the two detached lists
+        #Goal: do in one pass
+        
+        if(head==None):
+            return None
 
+        #Loop through once, store all the nodes in a list
+        #Just index the list and connect i-1 and i+1 nodes
+        all_nodes = []
+        
+        tmp = head
+        while(tmp!=None):
+            all_nodes.append(tmp)
+            tmp = tmp.next
+            
+        
+        nth_node_i = len(all_nodes)-n
+        
+        nth_node_i_minus1 = -1
+        nth_node_i_plus1 = -1
+        
+        if(nth_node_i-1<len(all_nodes) and nth_node_i-1>=0):
+            nth_node_i_minus1 = nth_node_i-1
+
+        if(nth_node_i+1<len(all_nodes) and nth_node_i+1>=0):
+            nth_node_i_plus1 = nth_node_i+1
+            
+            
+        if(nth_node_i_minus1!=-1 and nth_node_i_plus1!=-1):
+            all_nodes[nth_node_i_minus1].next = all_nodes[nth_node_i_plus1]
+            del all_nodes[nth_node_i]
+        elif(nth_node_i==0):
+            all_nodes[nth_node_i].next = None
+            del all_nodes[nth_node_i]
+        elif(nth_node_i==len(all_nodes)-1):
+            all_nodes[nth_node_i_minus1].next = None
+            del all_nodes[nth_node_i]
+            
+        if(len(all_nodes)>0):
+            self._head = all_nodes[0]
+        else:
+            return
 
 
  

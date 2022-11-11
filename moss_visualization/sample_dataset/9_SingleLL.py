@@ -109,7 +109,7 @@ class SingleLinkedList:
 
  
 def main():
-    print("----------------Testing __getflagem__------------------")
+    print("----------------Testing __getitem__------------------")
     l1 = SingleLinkedList()
     l1.insert_from_head('good')
     l1.insert_from_head('nice')
@@ -148,11 +148,17 @@ def main():
     print(l1, "Expected: 1-->1-->1-->1-->1-->None")
     print()
 
+    l1 = SingleLinkedList()
+    l1.insert_from_head(0)
+    print(l1)
+    l1.remove_all_occurance(0)
+    print(l1, "Expected: None")
+    print()
+
     
 
-if __name__ == '__main__':
-    main()
-
+"""if __name__ == '__main__':
+    main()"""
 
 
 

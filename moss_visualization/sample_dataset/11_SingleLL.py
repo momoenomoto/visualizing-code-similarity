@@ -65,45 +65,50 @@ class SingleLinkedList:
 
     def list_reverse(self):
         head = self._head
-        if head is None or head.next is None:
-            return head
-        elif head.next.next is None:
-            t = head.next
-            head.next.next = head
-            head.next = None
-            return t
-        else:
-            t = self.reverseList(head.next)
-            head.next.next = head
-            head.next = None
-            self._head = t         
+        if not head:
+            return None
+        
+        prev_node = None
+        next_node = head
+        
+        while next_node:
+            current_node = next_node
+            next_node = current_node.next
+            
+            current_node.next = prev_node
+            prev_node = current_node
+        
+        self._head = prev_node 
 
     def remove_all_occurance(self, value):
-        # Remove the heading nodes
         head = self._head
-        while head and head.val == value:
-            head = head.next
         if not head:
             return head
-        prev, cur = head, head.next
-        while cur:
-            while cur and cur.val == value:
-                cur = cur.next
-            prev.next = cur
-            if cur:
-                prev, cur = prev.next, cur.next
+        while head and head.val == value:
+            head = head.next
+        temp = head
+        while temp and temp.next:
+            if temp.next.val == value:
+                temp.next = temp.next.next
+            else:
+                temp =  temp.next
         self._head = head
     
     def remove_nth_node_from_end(self, n):
-        ret, p2 = _Node(0), self._head #p1 and p2 are slow and fast pointers
-        p1, ret._next = ret, self._head #append a newly created ListNode in front of head to avoid extra checks
-        while p2 != None:
-            if n == 0: p1 = p1.next
-            else: n = n - 1
-            p2 = p2._next
-        p1._next = p1._next._next
-        self._head = ret._next
-
+        head = self._head
+        l = []
+        
+        while(head):
+            l.append(head.val)
+            head = head.next
+        
+        l.pop(len(l)-n)
+        i = self._Node()
+        temp = i
+        for j in l:
+            i.next = self._Node(j)
+            i = i.next
+        self._head = temp.next
 
 
  

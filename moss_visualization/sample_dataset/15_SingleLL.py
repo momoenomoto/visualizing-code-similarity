@@ -58,52 +58,54 @@ class SingleLinkedList:
         return "".join(result)
 
     def __getitem__(self, k):
-        temp = self._head
+        tempNode = self._head
         for i in range(k):
-            temp = temp.__next
-        return temp._element
+            tempNode = tempNode.__next
+        return tempNode._element
 
     def list_reverse(self):
         head = self._head
-        if head is None or head.next is None:
-            return head
-        elif head.next.next is None:
-            t = head.next
-            head.next.next = head
-            head.next = None
-            return t
-        else:
-            t = self.reverseList(head.next)
-            head.next.next = head
-            head.next = None
-            self._head = t         
+        # if empty, return None
+        if not head: return None
+        # initailize
+        node1, node2 = None, head
+        # only if node2 is not at the end
+        while node2:
+            # switch nodes
+            curNode = node2
+            node2 = curNode.next
+            curNode.next = node1
+            node1 = curNode
+        
+        self._head = node1 
 
     def remove_all_occurance(self, value):
-        # Remove the heading nodes
         head = self._head
+        # if empty, return the head
+        if not head: return head
+        # check if end of list and whether value is same
         while head and head.val == value:
             head = head.next
-        if not head:
-            return head
-        prev, cur = head, head.next
-        while cur:
-            while cur and cur.val == value:
-                cur = cur.next
-            prev.next = cur
-            if cur:
-                prev, cur = prev.next, cur.next
+        # arrive at next node that is different
+        tempNode = head
+        # switch the linking
+        while tempNode and tempNode._next:
+            if tempNode._next.val == value: tempNode._next = tempNode._next._next
+            else: tempNode =  tempNode.next
         self._head = head
     
     def remove_nth_node_from_end(self, n):
-        ret, p2 = _Node(0), self._head #p1 and p2 are slow and fast pointers
-        p1, ret._next = ret, self._head #append a newly created ListNode in front of head to avoid extra checks
-        while p2 != None:
-            if n == 0: p1 = p1.next
-            else: n = n - 1
-            p2 = p2._next
-        p1._next = p1._next._next
-        self._head = ret._next
-
+        head = self._head
+        fast = head
+        for i in range(n, -1, -1):
+            fast = fast.next
+        if not fast: return head.next
+        slow = head
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+        slow.next = slow.next.next
+        self._head = head
 
 
  

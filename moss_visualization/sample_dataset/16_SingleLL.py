@@ -58,52 +58,55 @@ class SingleLinkedList:
         return "".join(result)
 
     def __getitem__(self, k):
-        temp = self._head
+        tempNode = self._head
         for i in range(k):
-            temp = temp.__next
-        return temp._element
+            tempNode = tempNode.__next
+        return tempNode._element
 
     def list_reverse(self):
-        head = self._head
-        if head is None or head.next is None:
-            return head
-        elif head.next.next is None:
-            t = head.next
-            head.next.next = head
-            head.next = None
-            return t
-        else:
-            t = self.reverseList(head.next)
-            head.next.next = head
-            head.next = None
-            self._head = t         
+        pre = None  # previous node
+        cur = self._head  # current node
+        while cur:  # iteratively
+            nxt = cur.next  # save the next node
+            cur.next = pre  # reverse
+            # go ahead
+            pre = cur
+            cur = nxt
+        self._head = pre
 
     def remove_all_occurance(self, value):
-        # Remove the heading nodes
-        head = self._head
-        while head and head.val == value:
-            head = head.next
-        if not head:
-            return head
-        prev, cur = head, head.next
-        while cur:
-            while cur and cur.val == value:
-                cur = cur.next
-            prev.next = cur
-            if cur:
-                prev, cur = prev.next, cur.next
+        curr = self._head
+        prev = None
+        
+        while(curr):
+            if curr.val == value: 
+                if curr == head:
+                    head = head.next
+                    curr = head
+                else:
+                    prev.next = curr.next
+                    curr = prev.next
+            else:
+                prev = curr
+                curr = curr.next
+        
         self._head = head
     
     def remove_nth_node_from_end(self, n):
-        ret, p2 = _Node(0), self._head #p1 and p2 are slow and fast pointers
-        p1, ret._next = ret, self._head #append a newly created ListNode in front of head to avoid extra checks
-        while p2 != None:
-            if n == 0: p1 = p1.next
-            else: n = n - 1
-            p2 = p2._next
-        p1._next = p1._next._next
-        self._head = ret._next
-
+        curr = self._head
+        l = 0
+        seen = {}
+        
+        while curr:
+            l += 1
+            seen[l] = curr
+            curr = curr.next
+        
+        if l == n:
+            return self._head.next
+        
+        seen[l - n].next = seen[l - n + 1].next
+        return
 
 
  

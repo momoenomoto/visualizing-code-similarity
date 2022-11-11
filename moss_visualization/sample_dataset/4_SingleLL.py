@@ -180,12 +180,12 @@ def main():
     print(l1, "Expected: 0-->1-->2-->3-->4-->5-->6-->7-->8-->9-->None")
 
 
-    print("-----------Testing remove_all_occurrentance-------------")
+    print("-----------Testing remove_all_occurance-------------")
     l1 = SingleLinkedList()
     for i in range(10):
         l1.insert_from_head(6)
     print(l1)  # 6-->6-->6-->6-->6-->6-->6-->6-->6-->6-->None
-    l1.remove_all_occurrentance(6)
+    l1.remove_all_occurance(6)
     print(l1, "Expected: None")
     print()
 
@@ -193,14 +193,14 @@ def main():
     for i in range(10):
         l1.insert_from_head(i % 2)
     print(l1)  # 1-->0-->1-->0-->1-->0-->1-->0-->1-->0-->None
-    l1.remove_all_occurrentance(0)
+    l1.remove_all_occurance(0)
     print(l1, "Expected: 1-->1-->1-->1-->1-->None")
     print()
 
     l1 = SingleLinkedList()
     l1.insert_from_head(0)
     print(l1)
-    l1.remove_all_occurrentance(0)
+    l1.remove_all_occurance(0)
     print(l1, "Expected: None")
     print()
 

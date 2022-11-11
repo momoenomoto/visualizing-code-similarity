@@ -65,45 +65,48 @@ class SingleLinkedList:
 
     def list_reverse(self):
         head = self._head
-        if head is None or head.next is None:
-            return head
-        elif head.next.next is None:
-            t = head.next
-            head.next.next = head
-            head.next = None
-            return t
-        else:
-            t = self.reverseList(head.next)
-            head.next.next = head
-            head.next = None
-            self._head = t         
+        if not head:
+            return None
+        prev=None
+        c=head
+        n=c.next
+        while c!=None:
+            n=c.next
+            c.next=prev
+            prev=c
+            c=n
+        head=prev 
+        self._head = head
 
     def remove_all_occurance(self, value):
-        # Remove the heading nodes
         head = self._head
-        while head and head.val == value:
-            head = head.next
-        if not head:
-            return head
-        prev, cur = head, head.next
-        while cur:
-            while cur and cur.val == value:
-                cur = cur.next
-            prev.next = cur
-            if cur:
-                prev, cur = prev.next, cur.next
-        self._head = head
+        ret = None
+        while head:
+            if not ret and head.val != value:             # Set the head node whose value is not == val
+                ret = head
+            if head.next and head.next.val == value:      # Remove the nodes whose value == val
+                head.next = head.next.next
+            else:                                       # Skip the nodes with different val
+                head = head.next
+        self._head = ret
     
     def remove_nth_node_from_end(self, n):
-        ret, p2 = _Node(0), self._head #p1 and p2 are slow and fast pointers
-        p1, ret._next = ret, self._head #append a newly created ListNode in front of head to avoid extra checks
-        while p2 != None:
-            if n == 0: p1 = p1.next
-            else: n = n - 1
-            p2 = p2._next
-        p1._next = p1._next._next
-        self._head = ret._next
-
+        _, self._head = self.onePassOptimized(self._head, n)[1]
+    
+    def onePassOptimized(self, head, n):
+        temp = self._Node(0)
+        temp.next = head
+        first, second = temp, temp
+        for i in range(n + 1):
+            first = first.next
+        
+        while first:
+            first = first.next
+            second = second.next
+        
+        second.next = second.next.next
+        return 0, temp.next
+    
 
 
  
