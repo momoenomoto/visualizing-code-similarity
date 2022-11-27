@@ -1,0 +1,238 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 800px;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="2">2</option>
+                                
+                                    <option value="4">4</option>
+                                
+                                    <option value="18">18</option>
+                                
+                                    <option value="7">7</option>
+                                
+                                    <option value="19">19</option>
+                                
+                                    <option value="12">12</option>
+                                
+                                    <option value="11">11</option>
+                                
+                                    <option value="10">10</option>
+                                
+                                    <option value="5">5</option>
+                                
+                                    <option value="3">3</option>
+                                
+                                    <option value="1">1</option>
+                                
+                                    <option value="17">17</option>
+                                
+                                    <option value="15">15</option>
+                                
+                                    <option value="14">14</option>
+                                
+                                    <option value="13">13</option>
+                                
+                                    <option value="9">9</option>
+                                
+                                    <option value="6">6</option>
+                                
+                                    <option value="8">8</option>
+                                
+                                    <option value="20">20</option>
+                                
+                                    <option value="16">16</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "2", "label": "2", "shape": "circle", "size": 100, "title": "2_SingleLL"}, {"color": "#97c2fc", "id": "4", "label": "4", "shape": "circle", "size": 100, "title": "4_SingleLL"}, {"color": "#97c2fc", "id": "18", "label": "18", "shape": "circle", "size": 100, "title": "18_SingleLL"}, {"color": "#97c2fc", "id": "7", "label": "7", "shape": "circle", "size": 100, "title": "7_SingleLL"}, {"color": "#97c2fc", "id": "19", "label": "19", "shape": "circle", "size": 100, "title": "19_SingleLL"}, {"color": "#97c2fc", "id": "12", "label": "12", "shape": "circle", "size": 100, "title": "12_SingleLL"}, {"color": "#97c2fc", "id": "11", "label": "11", "shape": "circle", "size": 100, "title": "11_SingleLL"}, {"color": "#97c2fc", "id": "10", "label": "10", "shape": "circle", "size": 100, "title": "10_SingleLL"}, {"color": "#97c2fc", "id": "5", "label": "5", "shape": "circle", "size": 100, "title": "5_SingleLL"}, {"color": "#97c2fc", "id": "3", "label": "3", "shape": "circle", "size": 100, "title": "3_SingleLL"}, {"color": "#97c2fc", "id": "1", "label": "1", "shape": "circle", "size": 100, "title": "1_SingleLL"}, {"color": "#97c2fc", "id": "17", "label": "17", "shape": "circle", "size": 100, "title": "17_SingleLL"}, {"color": "#97c2fc", "id": "15", "label": "15", "shape": "circle", "size": 100, "title": "15_SingleLL"}, {"color": "#97c2fc", "id": "14", "label": "14", "shape": "circle", "size": 100, "title": "14_SingleLL"}, {"color": "#97c2fc", "id": "13", "label": "13", "shape": "circle", "size": 100, "title": "13_SingleLL"}, {"color": "#97c2fc", "id": "9", "label": "9", "shape": "circle", "size": 100, "title": "9_SingleLL"}, {"color": "#97c2fc", "id": "6", "label": "6", "shape": "circle", "size": 100, "title": "6_SingleLL"}, {"color": "#97c2fc", "id": "8", "label": "8", "shape": "circle", "size": 100, "title": "8_SingleLL"}, {"color": "#97c2fc", "id": "20", "label": "20", "shape": "circle", "size": 100, "title": "20_SingleLL"}, {"color": "#97c2fc", "id": "16", "label": "16", "shape": "circle", "size": 100, "title": "16_SingleLL"}]);
+                  edges = new vis.DataSet([{"from": "2", "title": "Lines Matched: 93\n Weight: 1.0", "to": "4", "width": 10.0}, {"from": "2", "title": "Lines Matched: 11\n Weight: 0.057", "to": "18", "width": 0.5747126436781609}, {"from": "2", "title": "Lines Matched: 11\n Weight: 0.057", "to": "7", "width": 0.5747126436781609}, {"from": "2", "title": "Lines Matched: 10\n Weight: 0.046", "to": "19", "width": 0.45977011494252873}, {"from": "2", "title": "Lines Matched: 10\n Weight: 0.046", "to": "12", "width": 0.45977011494252873}, {"from": "2", "title": "Lines Matched: 10\n Weight: 0.046", "to": "11", "width": 0.45977011494252873}, {"from": "2", "title": "Lines Matched: 11\n Weight: 0.057", "to": "10", "width": 0.5747126436781609}, {"from": "4", "title": "Lines Matched: 11\n Weight: 0.057", "to": "18", "width": 0.5747126436781609}, {"from": "4", "title": "Lines Matched: 11\n Weight: 0.057", "to": "7", "width": 0.5747126436781609}, {"from": "4", "title": "Lines Matched: 8\n Weight: 0.023", "to": "5", "width": 0.22988505747126436}, {"from": "4", "title": "Lines Matched: 8\n Weight: 0.023", "to": "3", "width": 0.22988505747126436}, {"from": "4", "title": "Lines Matched: 8\n Weight: 0.023", "to": "1", "width": 0.22988505747126436}, {"from": "4", "title": "Lines Matched: 10\n Weight: 0.046", "to": "19", "width": 0.45977011494252873}, {"from": "4", "title": "Lines Matched: 10\n Weight: 0.046", "to": "12", "width": 0.45977011494252873}, {"from": "4", "title": "Lines Matched: 10\n Weight: 0.046", "to": "11", "width": 0.45977011494252873}, {"from": "4", "title": "Lines Matched: 11\n Weight: 0.057", "to": "10", "width": 0.5747126436781609}, {"from": "1", "title": "Lines Matched: 76\n Weight: 0.805", "to": "3", "width": 8.045977011494253}, {"from": "1", "title": "Lines Matched: 65\n Weight: 0.678", "to": "5", "width": 6.781609195402298}, {"from": "1", "title": "Lines Matched: 7\n Weight: 0.011", "to": "19", "width": 0.11494252873563218}, {"from": "1", "title": "Lines Matched: 7\n Weight: 0.011", "to": "17", "width": 0.11494252873563218}, {"from": "3", "title": "Lines Matched: 61\n Weight: 0.632", "to": "5", "width": 6.32183908045977}, {"from": "3", "title": "Lines Matched: 7\n Weight: 0.011", "to": "19", "width": 0.11494252873563218}, {"from": "3", "title": "Lines Matched: 7\n Weight: 0.011", "to": "17", "width": 0.11494252873563218}, {"from": "11", "title": "Lines Matched: 59\n Weight: 0.609", "to": "12", "width": 6.0919540229885065}, {"from": "11", "title": "Lines Matched: 37\n Weight: 0.356", "to": "15", "width": 3.5632183908045976}, {"from": "11", "title": "Lines Matched: 37\n Weight: 0.356", "to": "14", "width": 3.5632183908045976}, {"from": "11", "title": "Lines Matched: 44\n Weight: 0.437", "to": "19", "width": 4.367816091954023}, {"from": "11", "title": "Lines Matched: 35\n Weight: 0.333", "to": "18", "width": 3.333333333333333}, {"from": "11", "title": "Lines Matched: 24\n Weight: 0.207", "to": "17", "width": 2.0689655172413794}, {"from": "11", "title": "Lines Matched: 18\n Weight: 0.138", "to": "13", "width": 1.3793103448275863}, {"from": "11", "title": "Lines Matched: 20\n Weight: 0.161", "to": "9", "width": 1.6091954022988506}, {"from": "11", "title": "Lines Matched: 20\n Weight: 0.161", "to": "7", "width": 1.6091954022988506}, {"from": "11", "title": "Lines Matched: 20\n Weight: 0.161", "to": "10", "width": 1.6091954022988506}, {"from": "11", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "12", "title": "Lines Matched: 38\n Weight: 0.368", "to": "15", "width": 3.67816091954023}, {"from": "12", "title": "Lines Matched: 38\n Weight: 0.368", "to": "14", "width": 3.67816091954023}, {"from": "12", "title": "Lines Matched: 44\n Weight: 0.437", "to": "19", "width": 4.367816091954023}, {"from": "12", "title": "Lines Matched: 35\n Weight: 0.333", "to": "18", "width": 3.333333333333333}, {"from": "12", "title": "Lines Matched: 24\n Weight: 0.207", "to": "17", "width": 2.0689655172413794}, {"from": "12", "title": "Lines Matched: 17\n Weight: 0.126", "to": "13", "width": 1.264367816091954}, {"from": "12", "title": "Lines Matched: 22\n Weight: 0.184", "to": "9", "width": 1.839080459770115}, {"from": "12", "title": "Lines Matched: 20\n Weight: 0.161", "to": "7", "width": 1.6091954022988506}, {"from": "12", "title": "Lines Matched: 20\n Weight: 0.161", "to": "10", "width": 1.6091954022988506}, {"from": "12", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "14", "title": "Lines Matched: 54\n Weight: 0.552", "to": "15", "width": 5.517241379310345}, {"from": "14", "title": "Lines Matched: 43\n Weight: 0.425", "to": "19", "width": 4.25287356321839}, {"from": "14", "title": "Lines Matched: 39\n Weight: 0.379", "to": "17", "width": 3.793103448275862}, {"from": "14", "title": "Lines Matched: 25\n Weight: 0.218", "to": "18", "width": 2.1839080459770117}, {"from": "14", "title": "Lines Matched: 17\n Weight: 0.126", "to": "13", "width": 1.264367816091954}, {"from": "14", "title": "Lines Matched: 22\n Weight: 0.184", "to": "9", "width": 1.839080459770115}, {"from": "14", "title": "Lines Matched: 15\n Weight: 0.103", "to": "10", "width": 1.0344827586206897}, {"from": "14", "title": "Lines Matched: 9\n Weight: 0.034", "to": "7", "width": 0.3448275862068966}, {"from": "14", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "15", "title": "Lines Matched: 43\n Weight: 0.425", "to": "19", "width": 4.25287356321839}, {"from": "15", "title": "Lines Matched: 39\n Weight: 0.379", "to": "17", "width": 3.793103448275862}, {"from": "15", "title": "Lines Matched: 25\n Weight: 0.218", "to": "18", "width": 2.1839080459770117}, {"from": "15", "title": "Lines Matched: 17\n Weight: 0.126", "to": "13", "width": 1.264367816091954}, {"from": "15", "title": "Lines Matched: 22\n Weight: 0.184", "to": "9", "width": 1.839080459770115}, {"from": "15", "title": "Lines Matched: 15\n Weight: 0.103", "to": "10", "width": 1.0344827586206897}, {"from": "15", "title": "Lines Matched: 9\n Weight: 0.034", "to": "7", "width": 0.3448275862068966}, {"from": "15", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "17", "title": "Lines Matched: 54\n Weight: 0.552", "to": "19", "width": 5.517241379310345}, {"from": "17", "title": "Lines Matched: 23\n Weight: 0.195", "to": "18", "width": 1.954022988505747}, {"from": "17", "title": "Lines Matched: 15\n Weight: 0.103", "to": "9", "width": 1.0344827586206897}, {"from": "17", "title": "Lines Matched: 8\n Weight: 0.023", "to": "13", "width": 0.22988505747126436}, {"from": "17", "title": "Lines Matched: 6\n Weight: 0.0", "to": "10", "width": 0.0}, {"from": "19", "title": "Lines Matched: 44\n Weight: 0.437", "to": "18", "width": 4.367816091954023}, {"from": "19", "title": "Lines Matched: 20\n Weight: 0.161", "to": "7", "width": 1.6091954022988506}, {"from": "19", "title": "Lines Matched: 19\n Weight: 0.149", "to": "10", "width": 1.4942528735632181}, {"from": "19", "title": "Lines Matched: 13\n Weight: 0.08", "to": "9", "width": 0.8045977011494253}, {"from": "19", "title": "Lines Matched: 9\n Weight: 0.034", "to": "13", "width": 0.3448275862068966}, {"from": "18", "title": "Lines Matched: 12\n Weight: 0.069", "to": "9", "width": 0.6896551724137931}, {"from": "18", "title": "Lines Matched: 8\n Weight: 0.023", "to": "13", "width": 0.22988505747126436}, {"from": "18", "title": "Lines Matched: 11\n Weight: 0.057", "to": "7", "width": 0.5747126436781609}, {"from": "18", "title": "Lines Matched: 11\n Weight: 0.057", "to": "10", "width": 0.5747126436781609}, {"from": "8", "title": "Lines Matched: 25\n Weight: 0.218", "to": "9", "width": 2.1839080459770117}, {"from": "9", "title": "Lines Matched: 8\n Weight: 0.023", "to": "7", "width": 0.22988505747126436}, {"from": "9", "title": "Lines Matched: 8\n Weight: 0.023", "to": "13", "width": 0.22988505747126436}, {"from": "9", "title": "Lines Matched: 8\n Weight: 0.023", "to": "10", "width": 0.22988505747126436}, {"from": "9", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "7", "title": "Lines Matched: 21\n Weight: 0.172", "to": "10", "width": 1.7241379310344829}, {"from": "7", "title": "Lines Matched: 8\n Weight: 0.023", "to": "13", "width": 0.22988505747126436}, {"from": "7", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "7", "title": "Lines Matched: 7\n Weight: 0.011", "to": "20", "width": 0.11494252873563218}, {"from": "10", "title": "Lines Matched: 8\n Weight: 0.023", "to": "13", "width": 0.22988505747126436}, {"from": "10", "title": "Lines Matched: 7\n Weight: 0.011", "to": "6", "width": 0.11494252873563218}, {"from": "10", "title": "Lines Matched: 12\n Weight: 0.069", "to": "20", "width": 0.6896551724137931}, {"from": "13", "title": "Lines Matched: 20\n Weight: 0.161", "to": "6", "width": 1.6091954022988506}, {"from": "13", "title": "Lines Matched: 13\n Weight: 0.08", "to": "20", "width": 0.8045977011494253}, {"from": "13", "title": "Lines Matched: 11\n Weight: 0.057", "to": "16", "width": 0.5747126436781609}, {"from": "16", "title": "Lines Matched: 19\n Weight: 0.149", "to": "20", "width": 1.4942528735632181}, {"from": "16", "title": "Lines Matched: 16\n Weight: 0.115", "to": "6", "width": 1.1494252873563218}, {"from": "20", "title": "Lines Matched: 13\n Weight: 0.08", "to": "6", "width": 0.8045977011494253}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 200,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+                    network.on("click", neighbourhoodHighlight);
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
