@@ -28,7 +28,7 @@ if url:
 
         moss_graph.create(data, node_distance, spring_length, edge_scale, node_size, node_color, edge_color)
         
-        HtmlFile = open("nx.html", 'r', encoding='utf-8')
+        HtmlFile = open("test.html", 'r', encoding='utf-8')
         source_code = HtmlFile.read() 
         components.html(source_code, height=900, width=801)
 
